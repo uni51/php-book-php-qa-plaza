@@ -67,5 +67,5 @@ class AnswersTable extends Table
 
         return $rules;
     }
-    
+
 }
