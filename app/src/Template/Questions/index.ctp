@@ -18,7 +18,8 @@
                 <p class="card-subtitle mb-2 text-muted">
                     <small><?= h($question->created) ?></small>
                     <small>
-                        <i class="fas fa-comment-dots"></i> <?= $this->Number->format($question->answered_count) ?>
+                        <i class="fas fa-comment-dots"></i>
+                        <?= $this->Number->format($question->answered_count) ?>
                     </small>
                 </p>
                 <?= $this->Html->link('詳細へ', ['action' => 'view', $question->id], ['class' => 'card-link']) ?>
