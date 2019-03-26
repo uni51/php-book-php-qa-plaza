@@ -10,12 +10,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
 && docker-php-ext-install -j$(nproc) intl \
-&& docker-php-ext-install -j$(nproc) pdo_mysql \
-&& pecl install xdebug \
-&& docker-php-ext-enable xdebug
-
-# vim インストール
-RUN apt-get install -y vim
+&& docker-php-ext-install -j$(nproc) pdo_mysql
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
