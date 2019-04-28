@@ -23,11 +23,11 @@ class QuestionsController extends AppController
      */
     public function index()
     {
-        $questions = $this->paginate($this->Questions->findQuestionsWithAnsweredCount(), [
+        $questions = $this->paginate($this->Questions->findQuestionsWithAnsweredCount()->contain(['Users']), [
             'order' => ['Questions.id' => 'DESC']
         ]);
 
-        $this->set(compact('questions'));   // compactは変数名とその値から、配列を作る
+        $this->set(compact('questions'));
     }
 
     /**
@@ -40,13 +40,11 @@ class QuestionsController extends AppController
         $question = $this->Questions->newEntity();
 
         if ($this->request->is('post')) {
-            // patchEntity メソッドは、複数レコードのデータを一括でpatchしてくれる
             $question = $this->Questions->patchEntity($question, $this->request->getData());
 
-            $question->user_id = 1; // @TODO ユーザー管理機能時に修正する
+            $question->user_id = $this->Auth->user('id');
 
             if ($this->Questions->save($question)) {
-
                 $this->Flash->success('質問を投稿しました');
 
                 return $this->redirect(['action' => 'index']);
@@ -65,12 +63,13 @@ class QuestionsController extends AppController
      */
     public function view(int $id)
     {
-        $question = $this->Questions->get($id);
+        $question = $this->Questions->get($id, ['contain' => ['Users']]);
 
         $answers = $this
             ->Answers
             ->find()
             ->where(['Answers.question_id' => $id])
+            ->contain(['Users'])
             ->orderAsc('Answers.id')
             ->all();
 
@@ -90,7 +89,11 @@ class QuestionsController extends AppController
         $this->request->allowMethod(['post']);
 
         $question = $this->Questions->get($id);
-        // @TODO 質問を削除できるのは、質問投稿者のみとする
+        if ($question->user_id !== $this->Auth->user('id')) {
+            $this->Flash->error('他のユーザーの質問を削除することは出来ません');
+
+            return $this->redirect(['action' => 'index']);
+        }
 
         if ($this->Questions->delete($question)) {
             $this->Flash->success('質問を削除しました');
@@ -100,5 +103,4 @@ class QuestionsController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
-
 }

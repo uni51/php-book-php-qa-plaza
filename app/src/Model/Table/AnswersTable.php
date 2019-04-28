@@ -24,8 +24,13 @@ class AnswersTable extends Table
 
         $this->addBehavior('Timestamp'); // created及びmodifiedカラムを自動設定する
 
-        $this->belongsTo('Questions', [
+        $this->hasMany('Questions', [
             'foreignKey' => 'question_id',
+            'joinType' => 'INNER'
+        ]);
+
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -67,5 +72,4 @@ class AnswersTable extends Table
 
         return $rules;
     }
-
 }
