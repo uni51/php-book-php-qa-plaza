@@ -21,4 +21,4 @@ before_script:
   - mysql -u root -e 'CREATE DATABASE test;'
 
 script:
-  - composer check
+  - app/vendor/bin/phpunit
